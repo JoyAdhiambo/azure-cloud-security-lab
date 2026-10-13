@@ -7,6 +7,12 @@
  // MODULE 2: Synthetic authentication logs
  // All users and IP addresses are fictional.
 
+```kusto
+// Project: Azure Cloud Security Lab
+// Purpose: Detect users with repeated failed login attempts.
+// Data: Synthetic test data only. No real user accounts or credentials.
+
+// Step 1: Create sample authentication logs.
 let AuthLogs = datatable(
     Timestamp: datetime,
     User: string,
@@ -20,19 +26,31 @@ let AuthLogs = datatable(
     datetime(2026-10-13T08:03:00Z), "amina@example.test", "192.0.2.10", "Failure", "Microsoft 365",
     datetime(2026-10-13T08:04:00Z), "amina@example.test", "192.0.2.10", "Failure", "Microsoft 365",
     datetime(2026-10-13T08:05:00Z), "amina@example.test", "192.0.2.10", "Success", "Microsoft 365",
-
     datetime(2026-10-13T08:10:00Z), "brian@example.test", "192.0.2.20", "Success", "Microsoft 365",
     datetime(2026-10-13T08:12:00Z), "brian@example.test", "192.0.2.20", "Success", "Microsoft 365",
-
     datetime(2026-10-13T08:15:00Z), "clara@example.test", "192.0.2.30", "Failure", "Portal",
     datetime(2026-10-13T08:16:00Z), "clara@example.test", "192.0.2.30", "Failure", "Portal",
     datetime(2026-10-13T08:17:00Z), "clara@example.test", "192.0.2.30", "Success", "Portal",
-
     datetime(2026-10-13T08:20:00Z), "david@example.test", "192.0.2.40", "Failure", "Portal",
     datetime(2026-10-13T08:21:00Z), "david@example.test", "192.0.2.40", "Failure", "Portal",
     datetime(2026-10-13T08:22:00Z), "david@example.test", "192.0.2.40", "Failure", "Portal",
     datetime(2026-10-13T08:23:00Z), "david@example.test", "192.0.2.40", "Failure", "Portal"
 ];
 
+// Step 2: Keep failed login events only.
 AuthLogs
-| sort by Timestamp asc
+| where Result == "Failure"
+
+// Step 3: Count failures by user, IP address, and five-minute time bucket.
+| summarize FailedAttempts = count()
+    by User, IPAddress, TimeWindow = bin(Timestamp, 5m)
+
+// Step 4: Flag users with three or more failures in a bucket.
+| where FailedAttempts >= 3
+
+// Step 5: Display the most useful investigation fields.
+| project TimeWindow, User, IPAddress, FailedAttempts
+
+// Step 6: Show the highest failure counts first.
+| sort by FailedAttempts desc
+```
