@@ -3,3 +3,36 @@
  // Module 2: Simulated authentication threat detection
  // We will add runnable detection queries after creating
  // and validating our synthetic authentication dataset.
+
+ // MODULE 2: Synthetic authentication logs
+ // All users and IP addresses are fictional.
+
+let AuthLogs = datatable(
+    Timestamp: datetime,
+    User: string,
+    IPAddress: string,
+    Result: string,
+    App: string
+)
+[
+    datetime(2026-10-13T08:01:00Z), "amina@example.test", "192.0.2.10", "Failure", "Microsoft 365",
+    datetime(2026-10-13T08:02:00Z), "amina@example.test", "192.0.2.10", "Failure", "Microsoft 365",
+    datetime(2026-10-13T08:03:00Z), "amina@example.test", "192.0.2.10", "Failure", "Microsoft 365",
+    datetime(2026-10-13T08:04:00Z), "amina@example.test", "192.0.2.10", "Failure", "Microsoft 365",
+    datetime(2026-10-13T08:05:00Z), "amina@example.test", "192.0.2.10", "Success", "Microsoft 365",
+
+    datetime(2026-10-13T08:10:00Z), "brian@example.test", "192.0.2.20", "Success", "Microsoft 365",
+    datetime(2026-10-13T08:12:00Z), "brian@example.test", "192.0.2.20", "Success", "Microsoft 365",
+
+    datetime(2026-10-13T08:15:00Z), "clara@example.test", "192.0.2.30", "Failure", "Portal",
+    datetime(2026-10-13T08:16:00Z), "clara@example.test", "192.0.2.30", "Failure", "Portal",
+    datetime(2026-10-13T08:17:00Z), "clara@example.test", "192.0.2.30", "Success", "Portal",
+
+    datetime(2026-10-13T08:20:00Z), "david@example.test", "192.0.2.40", "Failure", "Portal",
+    datetime(2026-10-13T08:21:00Z), "david@example.test", "192.0.2.40", "Failure", "Portal",
+    datetime(2026-10-13T08:22:00Z), "david@example.test", "192.0.2.40", "Failure", "Portal",
+    datetime(2026-10-13T08:23:00Z), "david@example.test", "192.0.2.40", "Failure", "Portal"
+];
+
+AuthLogs
+| sort by Timestamp asc
