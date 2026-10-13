@@ -1,0 +1,23 @@
+
+// Azure Cloud Security Lab
+// Module 1: KQL fundamentals
+// Purpose: Practise querying sample data in Azure Data Explorer.
+
+// Query 1: Display 10 sample records.
+StormEvents
+| take 10
+
+// Query 2: Count all records.
+StormEvents
+| count
+
+// Query 3: Select useful fields.
+StormEvents
+| project StartTime, State, EventType
+| take 10
+
+// Query 4: Filter for tornado events.
+StormEvents
+| where EventType == "Tornado"
+| project StartTime, State, EventType
+| take 10
